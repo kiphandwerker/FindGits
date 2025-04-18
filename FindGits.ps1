@@ -1,8 +1,7 @@
 ﻿# PowerShell script to search selected folders on all drives for .git directories
 
-$searchRoots = @("C:\Users\19018\OneDrive\Programs")  # Add/remove paths as needed
+$searchRoots = @("C:\..\..\..")  # Add/remove paths as needed
 
-# Store all valid git repo results
 $results = @()
 
 foreach ($startPath in $searchRoots) {
@@ -48,6 +47,7 @@ foreach ($startPath in $searchRoots) {
 # Group and display only folders that have a .git directory
 $grouped = $results | Group-Object Group
 
+# Not really a fan of how these are grouped so they're commented out
 foreach ($group in $grouped) {
     #Write-Host "`nGroup: $($group.Name)" -ForegroundColor Yellow
     $group.Group | Select-Object FolderPath, GitHubRepo #| Format-Table -AutoSize
