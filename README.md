@@ -2,6 +2,12 @@
 
 This PowerShell script searches through specified directories for folders that are Git repositories (i.e., contain a `.git` folder), and checks whether they are associated with **GitHub**.
 
+# Table of Contents
+- [Features](#-features)
+- [Usage](#️-usage)
+- [Notes](#-notes)
+- [Requirements](#-requirements)
+
 ## 🔍 Features
 
 - Recursively scans selected root folders for Git repositories
