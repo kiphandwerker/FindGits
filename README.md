@@ -1,6 +1,7 @@
 # Git Repository Finder (PowerShell)
+Sometimes it is really annoying to find which folders have git repositiories in them. So I put this together to make it a bit easier search for them.
 
-This PowerShell script searches through specified directories for folders that are Git repositories (i.e., contain a `.git` folder), and checks whether they are associated with **GitHub**.
+This PowerShell script searches through specified directories for folders that are Git repositories (i.e., contain a `.git` folder), and also checks whether they are associated with **GitHub**.
 
 # Table of Contents
 - [Features](#-features)
