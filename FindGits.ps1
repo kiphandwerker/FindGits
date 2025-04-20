@@ -1,7 +1,4 @@
-﻿# PowerShell script to search selected folders on all drives for .git directories
-
-$searchRoots = @("C:\..\..\..")  # Add/remove paths as needed
-
+﻿$searchRoots = @("C:\Users\19018\OneDrive\Programs")  # Add/remove paths as needed
 $results = @()
 
 foreach ($startPath in $searchRoots) {
@@ -17,6 +14,7 @@ foreach ($startPath in $searchRoots) {
 
                 if (Test-Path $gitPath) {
                     $hasGitHub = $false
+                    $gitStatus = "Unknown"
 
                     if (Test-Path $configPath) {
                         $configContent = Get-Content $configPath -ErrorAction SilentlyContinue
@@ -25,6 +23,29 @@ foreach ($startPath in $searchRoots) {
                         }
                     }
 
+                    Push-Location $fullPath
+                    try {
+                        & git fetch *>$null
+
+                        $localHash = & git rev-parse HEAD 2>$null
+                        $remoteHash = & git rev-parse "HEAD@{u}" 2>$null
+                        $baseHash = & git merge-base HEAD "HEAD@{u}" 2>$null
+
+                        if ($localHash -eq $remoteHash) {
+                            $gitStatus = "Up to date"
+                        } elseif ($localHash -eq $baseHash) {
+                            $gitStatus = "Behind"
+                        } elseif ($remoteHash -eq $baseHash) {
+                            $gitStatus = "Ahead"
+                        } else {
+                            $gitStatus = "Diverged"
+                        }
+                    }
+                    catch {
+                        $gitStatus = "Error or no upstream"
+                    }
+                    Pop-Location
+
                     $relativeRoot = $fullPath.Substring($startPath.Length).TrimStart('\').Split('\')[0]
                     $groupFolder = Join-Path $startPath $relativeRoot
 
@@ -32,6 +53,7 @@ foreach ($startPath in $searchRoots) {
                         Group        = $groupFolder
                         FolderPath   = $fullPath
                         GitHubRepo   = if ($hasGitHub) { "Yes" } else { "No" }
+                        GitStatus    = $gitStatus
                     }
                 }
             }
@@ -44,13 +66,9 @@ foreach ($startPath in $searchRoots) {
     }
 }
 
-# Group and display only folders that have a .git directory
+# Group and display
 $grouped = $results | Group-Object Group
 
-# Not really a fan of how these are grouped so they're commented out
 foreach ($group in $grouped) {
-    #Write-Host "`nGroup: $($group.Name)" -ForegroundColor Yellow
-    $group.Group | Select-Object FolderPath, GitHubRepo #| Format-Table -AutoSize
+    $group.Group | Select-Object FolderPath, GitHubRepo, GitStatus
 }
-
-
