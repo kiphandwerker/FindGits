@@ -1,4 +1,4 @@
-﻿$searchRoots = @("C:\Users\19018\OneDrive\Programs")  # Add/remove paths as needed
+﻿$searchRoots = @("C:\..")  # Add/remove paths as needed
 $results = @()
 
 foreach ($startPath in $searchRoots) {
